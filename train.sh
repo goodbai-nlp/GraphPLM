@@ -1,16 +1,21 @@
 export CUDA_VISIBLE_DEVICES=0,1
 ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-dataset=AMR20
+#dataset=AMR20
+dataset=silver
 
 BasePath=/mnt/nfs-storage/data/        # change dir here
-datapath=$BasePath/$dataset
-MODEL=$BasePath/pretrained-model/bart-base
-cache=$datapath/.cache/
+
+#datapath=${BasePath}/${dataset}       # 
+datapath=${ROOT_DIR}/data/${dataset}
+
+MODEL=${BasePath}/pretrained-model/bart-base
+cache=${datapath}/.cache/
 
 lr=3e-5
 
 OUTPUT_DIR=${ROOT_DIR}/outputs/bart-base-lr-${lr}-bsz256
+OUTPUT_DIR=${ROOT_DIR}/outputs/bart-base-lr-${lr}-bsz256-debug
 
 if [ ! -d ${OUTPUT_DIR} ];then
   mkdir -p ${OUTPUT_DIR}

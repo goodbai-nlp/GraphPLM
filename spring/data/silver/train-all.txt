@@ -1,0 +1,97 @@
+# AMR release; corpus: bolt; section: training; number of AMRs: 1061 (generated on Thu Jan 25, 2018 at 16:14:51)
+
+# ::id bolt12_07_4800.1 ::date 2012-12-19T12:53:14 ::annotator SDL-AMR-09 ::preferred
+# ::snt Establishing Models in Industrial Innovation
+# ::save-date Wed Oct 30, 2013 ::file bolt12_07_4800_1.txt
+(e / establish-01
+  :ARG1 (m / model
+          :mod (i / innovate-01
+                 :ARG1 (i2 / industry))))
+
+# ::id bolt12_07_4800.2 ::date 2012-12-19T14:01:36 ::annotator SDL-AMR-09 ::preferred
+# ::snt After its competitor invented the front loading washing machine, the CEO of the American IM company believed that each of its employees had the ability for innovation , and formulated strategic countermeasures for innovation in the industry.
+# ::save-date Wed Dec 20, 2017 ::file bolt12_07_4800_2.txt
+(a / and
+      :op1 (b / believe-01
+            :ARG0 (p2 / person
+                  :ARG0-of (h2 / have-org-role-91
+                        :ARG1 (c2 / company :wiki - :name (n / name :op1 "IM")
+                              :mod (c3 / country :wiki "United_States" :name (n2 / name :op1 "United" :op2 "States")))
+                        :ARG2 (o / officer
+                              :mod (e3 / executive)
+                              :mod (c7 / chief))))
+            :ARG1 (c8 / capable-01
+                  :ARG1 (p / person
+                        :ARG1-of (e / employ-01
+                              :ARG0 c2)
+                        :mod (e2 / each))
+                  :ARG2 (i / innovate-01
+                        :ARG0 p)))
+      :op2 (f / formulate-01
+            :ARG0 (o2 / officer
+                  :mod (e4 / executive)
+                  :mod (c / chief))
+            :ARG1 (c4 / countermeasure
+                  :mod (s / strategy)
+                  :purpose (i2 / innovate-01
+                        :topic (i3 / industry))))
+      :time (a3 / after
+            :op1 (i4 / invent-01
+                  :ARG0 (c5 / company
+                        :ARG0-of (c6 / compete-02
+                              :ARG1 c2))
+                  :ARG1 (m / machine
+                        :ARG0-of (w / wash-01)
+                        :ARG1-of (l / load-01
+                              :mod (f2 / front))))))
+
+# ::id bolt12_07_4800.3 ::date 2012-12-20T08:37:49 ::annotator SDL-AMR-09 ::preferred
+# ::snt 1. Establish an innovation fund with a maximum amount of 1,000 U.S. dollars.
+# ::save-date Mon Oct 12, 2015 ::file bolt12_07_4800_3.txt
+(e / establish-01 :li 1
+      :ARG1 (f2 / fund
+            :purpose (i / innovate-01)
+            :ARG1-of (a / amount-01
+                  :ARG2 (a2 / at-most
+                        :op1 (m / monetary-quantity :quant 1000
+                              :unit (d / dollar
+                                    :mod (c / country :wiki "United_States"
+                                          :name (n / name :op1 "United" :op2 "States"))))))))
+
+# ::id bolt12_07_4800.4 ::date 2012-12-20T08:39:47 ::annotator SDL-AMR-09 ::preferred
+# ::snt 2. Choose 100 innovative concepts to encourage employees to conduct research and development during their work time or spare time.
+# ::save-date Wed Dec 3, 2014 ::file bolt12_07_4800_4.txt
+(c / choose-01
+      :ARG1 (c2 / concept :quant 100
+            :ARG1-of (i / innovate-01))
+      :li 2
+      :purpose (e / encourage-01
+            :ARG0 c2
+            :ARG1 (p / person
+                  :ARG1-of (e2 / employ-01))
+            :ARG2 (a / and
+                  :op1 (r / research-01
+                        :ARG0 p)
+                  :op2 (d / develop-02
+                        :ARG0 p)
+                  :time (o / or
+                        :op1 (w / work-01
+                              :ARG0 p)
+                        :op2 (t2 / time
+                              :poss p
+                              :mod (s / spare))))))
+
+# ::id bolt12_07_4800.5 ::date 2012-12-20T09:54:09 ::annotator SDL-AMR-09 ::preferred
+# ::snt 3. From among them, pick out 50 for submission to an assessment committee to assess.
+# ::save-date Thu Jan 9, 2014 ::file bolt12_07_4800_5.txt
+(p / pick-out-03
+      :ARG1 (t / thing :quant 50
+            :ARG1-of (s / submit-01
+                  :ARG2 (c / committee
+                        :ARG0-of (a / assess-01))
+                  :ARG3 (a2 / assess-01
+                        :ARG0 c
+                        :ARG1 t)))
+      :ARG2 (t2 / they)
+      :li 3)
+
