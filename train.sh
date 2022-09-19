@@ -1,21 +1,17 @@
-export CUDA_VISIBLE_DEVICES=0,1
+export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+echo $ROOT_DIR
+BASE_PATH=/apdcephfs/share_916081/xfbai/data
 
-#dataset=AMR20
-dataset=silver
+dataset=wiki_0_100
 
-BasePath=/mnt/nfs-storage/data/        # change dir here
-
-#datapath=${BasePath}/${dataset}       # 
-datapath=${ROOT_DIR}/data/${dataset}
-
-MODEL=${BasePath}/pretrained-model/bart-base
+datapath=${BASE_PATH}/GraphPLM/${dataset}
+MODEL=${BASE_PATH}/bart-base
 cache=${datapath}/.cache/
 
 lr=3e-5
 
-OUTPUT_DIR=${ROOT_DIR}/outputs/bart-base-lr-${lr}-bsz256
-OUTPUT_DIR=${ROOT_DIR}/outputs/bart-base-lr-${lr}-bsz256-debug
+OUTPUT_DIR=${BASE_PATH}/outputs/exp.GraphPLM/GraphPLM-bart-base-lr-${lr}-bsz256
 
 if [ ! -d ${OUTPUT_DIR} ];then
   mkdir -p ${OUTPUT_DIR}
@@ -30,7 +26,7 @@ fi
 
 export HF_DATASETS_CACHE=$cache
 
-torchrun --nnodes=1 --nproc_per_node=2 --max_restarts=0 --rdzv_id=1 --rdzv_backend=c10d main.py \
+torchrun --nnodes=1 --nproc_per_node=8 --max_restarts=0 --rdzv_id=1 --rdzv_backend=c10d main.py \
     --train_file $datapath/train.jsonl \
     --validation_file $datapath/val.jsonl \
     --test_file $datapath/test.jsonl \
@@ -40,7 +36,7 @@ torchrun --nnodes=1 --nproc_per_node=2 --max_restarts=0 --rdzv_id=1 --rdzv_backe
     --overwrite_output_dir \
     --per_device_train_batch_size 16 \
     --per_device_eval_batch_size 16 \
-    --gradient_accumulation_steps 8 \
+    --gradient_accumulation_steps 2 \
     --mlm_prob 0.15 \
     --smart_init True \
     --learning_rate $lr \

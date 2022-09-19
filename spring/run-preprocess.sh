@@ -1,6 +1,7 @@
 # !/bin/bash
 
-cate=silver
-echo "Preprocessing $cate ..."
-mkdir -p ../data/$cate					# Output Linearized AMR Path
-CUDA_VISIBLE_DEVICES=0 python -u bin/preprocess.py --config configs/config-$cate.yaml --direction amr 2>&1 | tee preprocess-$cate.log 
+CUDA_VISIBLE_DEVICES=1 python -u bin/preprocess.py \
+    --start 2100 \
+    --end 2124 \
+    --config configs/config-silver.yaml \
+    --direction amr 2>&1 | tee preprocess-silver.log 

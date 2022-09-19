@@ -196,7 +196,7 @@ def instantiate_loader(
     remove_longer_than=None,
     remove_wiki=False,
     dereify=True,
-    type_path="train",
+    output_path="train",
     data_cate="AMR1.0",
 ):
     paths = []
@@ -214,7 +214,7 @@ def instantiate_loader(
         remove_longer_than=remove_longer_than,
         remove_wiki=remove_wiki,
         dereify=dereify,
-        type_path=type_path,
+        output_path=output_path,
         data_cate=data_cate,
     )
     loader = AMRDatasetTokenBatcherAndLoader(

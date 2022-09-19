@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import torch
@@ -25,7 +26,7 @@ from ignite.metrics import RunningAverage
 from ignite.handlers import ModelCheckpoint, global_step_from_engine
 
 
-def preprocess(checkpoint=None, direction='amr', split_both_decoder=False, fp16=False):
+def preprocess(data_path, data_output_path, checkpoint=None, direction='amr', split_both_decoder=False, fp16=False):
 
     assert direction in ('amr', 'text', 'both')
 
@@ -45,7 +46,7 @@ def preprocess(checkpoint=None, direction='amr', split_both_decoder=False, fp16=
 
     train_gold_path = ROOT / f'../data/{config["cate"]}/train-gold.amr'
     train_loader = instantiate_loader(
-        config['train'],
+        data_path,
         tokenizer,
         batch_size=config['batch_size'],
         evaluation=True, out=train_gold_path,
@@ -53,34 +54,34 @@ def preprocess(checkpoint=None, direction='amr', split_both_decoder=False, fp16=
         remove_longer_than=config['remove_longer_than'],
         remove_wiki=config['remove_wiki'],
         dereify=config['dereify'],
-        type_path="train",
+        output_path=data_output_path,
         data_cate=config["cate"],
     )
 
-    dev_gold_path = ROOT / f'../data/{config["cate"]}/val-gold.amr'
-    dev_loader = instantiate_loader(
-        config['dev'],
-        tokenizer,
-        batch_size=config['batch_size'],
-        evaluation=True, out=dev_gold_path,
-        use_recategorization=config['use_recategorization'],
-        remove_wiki=config['remove_wiki'],
-        dereify=config['dereify'],
-        type_path="val",
-        data_cate=config["cate"],
-    )
-    test_gold_path = ROOT / f'../data/{config["cate"]}/test-gold.amr'
-    
-    test_loader = instantiate_loader(
-        config['test'],
-        tokenizer,
-        batch_size=config['batch_size'],
-        evaluation=True, out=test_gold_path,
-        use_recategorization=config['use_recategorization'],
-        type_path="test",
-        data_cate=config["cate"],
-    )
-    
+    #dev_gold_path = ROOT / f'../data/{config["cate"]}/val-gold.amr'
+    #dev_loader = instantiate_loader(
+    #    config['dev'],
+    #    tokenizer,
+    #    batch_size=config['batch_size'],
+    #    evaluation=True, out=dev_gold_path,
+    #    use_recategorization=config['use_recategorization'],
+    #    remove_wiki=config['remove_wiki'],
+    #    dereify=config['dereify'],
+    #    type_path="val",
+    #    data_cate=config["cate"],
+    #)
+    #test_gold_path = ROOT / f'../data/{config["cate"]}/test-gold.amr'
+    #
+    #test_loader = instantiate_loader(
+    #    config['test'],
+    #    tokenizer,
+    #    batch_size=config['batch_size'],
+    #    evaluation=True, out=test_gold_path,
+    #    use_recategorization=config['use_recategorization'],
+    #    type_path="test",
+    #    data_cate=config["cate"],
+    #)
+
 
 if __name__ == '__main__':
 
@@ -100,6 +101,8 @@ if __name__ == '__main__':
         help='Use the following config for hparams.')
     parser.add_argument('--checkpoint', type=str,
         help='Warm-start from a previous fine-tuned checkpoint.')
+    parser.add_argument('--start', type=int)
+    parser.add_argument('--end', type=int)
     parser.add_argument('--fp16', action='store_true')
     args, unknown = parser.parse_known_args()
 
@@ -108,6 +111,21 @@ if __name__ == '__main__':
 
     with args.config.open() as y:
         config = yaml.load(y, Loader=yaml.FullLoader)
+
+    with open('wiki_amr_fof', 'r') as f:
+        sections = [sec.strip() for sec in f]
+
+    wiki_amr_fof = []
+    wiki_amr_output_fof = []
+    data_prepath = '/cephfs/user/lfsong/exp.amr_pretrain/wiki_amr_parsed/outputs/'
+    data_postpath = 'val_outputs'
+    data_output_prepath = '/cephfs/user/lfsong/exp.amr_pretrain/GraphPLM/spring/pretrain_inputs_eval'
+    for i in range(args.start, args.end):
+        cur_dir = os.path.join(data_prepath, sections[i], data_postpath)
+        if os.path.isdir(cur_dir):
+            cur_fof = [os.path.join(cur_dir, cur_file) for cur_file in os.listdir(cur_dir) if cur_file.endswith('.txt')]
+            wiki_amr_fof.append(cur_fof)
+            wiki_amr_output_fof.append(os.path.join(data_output_prepath, sections[i] + '.jsonl'))
 
     if config['log_wandb']:
         wandb.init(
@@ -124,9 +142,10 @@ if __name__ == '__main__':
     else:
         checkpoint = None
 
-    preprocess(
-        checkpoint=checkpoint,
-        direction=args.direction,
-        split_both_decoder=args.split_both_decoder,
-        fp16=args.fp16,
-    )
+    for i in range(len(wiki_amr_fof)):
+        preprocess(wiki_amr_fof[i], wiki_amr_output_fof[i],
+            checkpoint=checkpoint,
+            direction=args.direction,
+            split_both_decoder=args.split_both_decoder,
+            fp16=args.fp16,
+        )

@@ -18,7 +18,7 @@ def reverse_direction(x, y, pad_token_id=1):
     return x, y
 
 class AMRDataset(Dataset):
-    
+
     def __init__(
         self,
         paths,
@@ -28,7 +28,7 @@ class AMRDataset(Dataset):
         remove_longer_than=None,
         remove_wiki=False,
         dereify=True,
-        type_path="train",
+        output_path="train",
         data_cate="AMR1.0"
     ):
         self.paths = paths
@@ -43,12 +43,13 @@ class AMRDataset(Dataset):
         self.remove_longer_than = remove_longer_than
         for g in graphs:
             l, e = self.tokenizer.linearize(g)
-            
+
             try:
                 self.tokenizer.batch_encode_sentences([g.metadata['snt']])
             except:
-                logging.warning('Invalid sentence!')
-                continue
+                g.metadata['snt'] = ''
+                #logging.warning('Invalid sentence!')
+                #continue
 
             if remove_longer_than and len(l) > remove_longer_than:
                 continue
@@ -60,31 +61,32 @@ class AMRDataset(Dataset):
             self.linearized.append(l)
             self.linearized_extra.append(e)
             self.linearized_tokens.append(e['linearized_graphs'][1:-1])
-        
+
         print("All {} instances in {}".format(len(self.sentences), paths))
         # json.dump(self.graphs, open(f'{type_path}_graph.json', 'w', encoding='utf-8'), indent=4)
         #json.dump(self.sentences, open(f'../data/{data_cate}/{type_path}_tgt_tokens.json', 'w', encoding='utf-8'), indent=4)
         # json.dump(self.linearized, open(f'{type_path}_linearized_ids.json', 'w', encoding='utf-8'), indent=4)
         #json.dump(self.linearized_tokens, open(f'../data/{data_cate}/{type_path}_linearized_tokens.json', 'w', encoding='utf-8'), indent=4)
         res_out = [json.dumps({"src": sent, "tgt": " ".join(lamr)}) for lamr, sent in zip(self.linearized_tokens, self.sentences)]
-        with open(f"../data/{data_cate}/{type_path}.jsonl", 'w', encoding='utf-8') as fout:
+        #with open(f"../data/{data_cate}/{type_path}.jsonl", 'w', encoding='utf-8') as fout:
+        with open(output_path, 'w', encoding='utf-8') as fout:
             fout.write('\n'.join(res_out))
 
     def __len__(self):
         return len(self.sentences)
-    
+
     def __getitem__(self, idx):
         sample = {}
         sample['id'] = idx
         sample['sentences'] = self.sentences[idx]
         if self.linearized is not None:
             sample['linearized_graphs_ids'] = self.linearized[idx]
-            sample.update(self.linearized_extra[idx])            
+            sample.update(self.linearized_extra[idx])
         return sample
-    
+
     def size(self, sample):
         return len(sample['linearized_graphs_ids'])
-    
+
     def collate_fn(self, samples, device=torch.device('cpu')):
         x = [s['sentences'] for s in samples]
         x, extra = self.tokenizer.batch_encode_sentences(x, device=device)
@@ -96,9 +98,9 @@ class AMRDataset(Dataset):
             y = None
         extra['ids'] = [s['id'] for s in samples]
         return x, y, extra
-    
+
 class AMRDatasetTokenBatcherAndLoader:
-    
+
     def __init__(self, dataset, batch_size=800, device=torch.device('cpu'), shuffle=False, sort=False):
         assert not (shuffle and sort)
         self.batch_size = batch_size
@@ -123,7 +125,7 @@ class AMRDatasetTokenBatcherAndLoader:
 
     def sampler(self):
         ids = list(range(len(self.dataset)))[::-1]
-        
+
         if self.shuffle:
             random.shuffle(ids)
         if self.sort:
