@@ -1,0 +1,31 @@
+name: amrlm
+dependencies:
+- nvidia::cudatoolkit=11.3.1
+- numpy
+- pillow
+- pip
+- python=3.8
+- pytorch::pytorch=1.12.0=py3.8_cuda11.3_cudnn8.3.2_0
+- scipy
+- tqdm
+- scikit-learn
+- gensim
+- pandas
+- pip:
+  - pillow-simd
+  - h5py-cache
+  - configargparse
+  - cached_property
+  - networkx
+  - penman>=1.1.0
+  - pytorch-ignite
+  - regex
+  - smatch
+  - wandb
+  - PyYAML>=5.1
+  - sacrebleu
+  - datasets==2.4.0
+  - transformers==4.21.3
+  - accelerate
+  - sentencepiece!=0.1.92
+  - nltk
