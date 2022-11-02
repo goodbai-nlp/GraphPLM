@@ -1,0 +1,11 @@
+{
+    "Token":"75iBhWtVlIKdgrpNV42yvA",
+    "business_flag": "nlpc",
+    "model_local_file_path": "/data/xfbai/mywork/GraphPLM/pre-train",
+	"start_cmd": "bash ./train-large.sh" ,
+    "host_num": 1,
+    "host_gpu_num": 8,
+    "GPUName": "V100",
+    "cuda_version": "10.2",
+    "image_full_name": "mirrors.tencent.com/docker-pytorch/tegcuda11py38torch1.12-runtime:graphplm"
+}

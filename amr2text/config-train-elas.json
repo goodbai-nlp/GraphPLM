@@ -1,0 +1,12 @@
+{
+    "Token":"75iBhWtVlIKdgrpNV42yvA",
+    "business_flag": "nlpc",
+    "model_local_file_path": "/data/xfbai/mywork/exp.PLMGen/amr2text",
+	"start_cmd": "bash ./run.sh" ,
+    "host_num": 1,
+    "host_gpu_num": 4,
+    "GPUName": "V100",
+    "is_elasticity": true, 
+    "cuda_version": "10.2",
+    "image_full_name": "mirrors.tencent.com/docker-pytorch/tegcuda11py38torch1.12-runtime:graphplm"
+}
